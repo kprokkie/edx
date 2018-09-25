@@ -25,7 +25,7 @@ export class GitSearchComponent implements OnInit {
       this.displayQuery = params.get('query');
       this.gitSearch();
     })
-    this.gitSearchService.gitSearch('angular').then((response) => {
+    this.gitSearchService.gitSearch('angular').subscribe((response) => {
       this.searchResults = response;
     }, (error) => {
       alert("Error: " + error.statusText)
@@ -36,7 +36,7 @@ export class GitSearchComponent implements OnInit {
   }
 
   gitSearch = () => {
-    this.gitSearchService.gitSearch(this.searchQuery).then((response) => {
+    this.gitSearchService.gitSearch(this.searchQuery).subscribe((response) => {
       this.searchResults = response;
     }, (error) => {
       alert("Error: " + error.statusText)

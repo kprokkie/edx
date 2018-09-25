@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GitSearchService } from '../git-search.service';
+//import { GitSearchService } from '../git-search.service';
+import { UnifiedSearchService } from '../unified-search.service'
 import { GitSearch } from '../git-search';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AdvancedSearchModel } from '../advanced-search-model';
@@ -18,7 +19,7 @@ export class GitSearchComponent implements OnInit {
   form: FormGroup;
   formControls = {};
 
-  constructor(private gitSearchService: GitSearchService, private route: ActivatedRoute, private router: Router) {
+  constructor(private UnifiedSearchService: UnifiedSearchService, private route: ActivatedRoute, private router: Router) {
     // we are going to iterate through our this.modelKeys and create FormControl elements for each of them wrapped in a larger object.
     // This will create a formControls object with all of the fields needed from our model.
     this.modelKeys.forEach((key) => {
@@ -56,7 +57,7 @@ export class GitSearchComponent implements OnInit {
       this.displayQuery = params.get('query');
       this.gitSearch();
     })
-    this.gitSearchService.gitSearch('angular').then((response) => {
+    this.gitSearchService.gitSearch('angular').subscribe((response) => {
       this.searchResults = response;
     }, (error) => {
       alert("Error: " + error.statusText)
@@ -66,9 +67,18 @@ export class GitSearchComponent implements OnInit {
     });
   }
 
+  // gitSearch = () => {
+  //   this.gitSearchService.gitSearch(this.searchQuery).subscribe((response) => {
+  //     this.searchResults = response;
+  //   }, (error) => {
+  //     alert("Error: " + error.statusText)
+  //   })
+  // }
+
   gitSearch = () => {
-    this.gitSearchService.gitSearch(this.searchQuery).then((response) => {
-      this.searchResults = response;
+    this.UnifiedSearchService.unifiedSearch(this.searchQuery).subscribe( (response) => {
+      console.log(response);
+      this.searchResults = response.repositories;
     }, (error) => {
       alert("Error: " + error.statusText)
     })

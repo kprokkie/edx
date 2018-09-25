@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GitSearch } from './git-search';
 import { HttpClient } from '@angular/common/http';
-import 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,24 +9,13 @@ import 'rxjs';
 export class GitSearchService {
 
   cachedValues: Array<{[query: string]: GitSearch}> = [];
+  search: Observable<GitSearch>;
 
   constructor(private http: HttpClient) { }
 
-  gitSearch = (query: string): Promise<GitSearch> => {
-    let promise = new Promise<GitSearch>((resolve, reject) => {
-      if (this.cachedValues[query]) {
-        resolve(this.cachedValues[query]);
-      } else {
-        this.http.get('https://api.github.com/search/repositories?q=' + query)
-        .toPromise()
-        .then((response) => {
-          resolve(response as GitSearch);
-        }, (reject) => {
-          resolve(reject);
-        });
-      }
-    })
-    return promise;
+  gitSearch = (query: string): Observable<GitSearch> => {
+    this.search = this.http.get<GitSearch>('https://api.github.com/search/repositories?q=' + query)
+    return this.search;
   }
 
 }
